@@ -5,12 +5,12 @@ import About from './Pages/About'
 import ProfilePage from './Pages/ProfilePage'
 import SingIn from './Pages/SingIn'
 import SingUp from './Pages/SingUp'
+import Navbar from './component/Navbar'
 function App() {
- 
-
   return (
     <>
     <BrowserRouter>
+    <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/about' element={<About/>} />
