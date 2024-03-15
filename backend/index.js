@@ -13,6 +13,14 @@ connecteMongoDb(process.env.MOGOLOCAURL)
     console.log(`error ${err}`)
 })
 
+//middleWare
+server.use(express.json())
+
+
+server.get('/api/home',(req,res)=>{
+    res.json({sucess:"hello wrold!"})
+})
+
 server.listen(8080,()=>{
-    console.log("server started!!")
+    console.log("server started!")
 })
