@@ -1,8 +1,9 @@
 import express from 'express';
 import {connecteMongoDb} from './db.js'
 import dotenv from 'dotenv'
+import userRouter from './routes/userRouter.js';
 dotenv.config()
-const server=express()
+const app=express()
 
 
 connecteMongoDb(process.env.MOGOLOCAURL)
@@ -14,13 +15,10 @@ connecteMongoDb(process.env.MOGOLOCAURL)
 })
 
 //middleWare
-server.use(express.json())
+app.use(express.json())
+app.use('/api/user',userRouter)
 
 
-server.get('/api/home',(req,res)=>{
-    res.json({sucess:"hello wrold!"})
-})
-
-server.listen(8080,()=>{
+app.listen(8080,()=>{
     console.log("server started!")
 })

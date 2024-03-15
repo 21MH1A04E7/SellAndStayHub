@@ -23,7 +23,7 @@ function Header() {
             <FaSearch className="searchIcon text-slate-500" />
           </form>
           <ul className="flex gap-3 font-mono uppercase">
-            <NavLink to="/" className="focus:bg-red-200">
+            <NavLink to="/" >
               <li className="hidden sm:inline hover:underline text-slate-900">
                 Home
               </li>
