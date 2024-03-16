@@ -13,6 +13,6 @@ export const signup=async (req,res,next)=>{
    }
    catch(err){
     console.log('internal server error')
-    next(errorHandler(200,'enter'))
+    next(err)
    }
 }
