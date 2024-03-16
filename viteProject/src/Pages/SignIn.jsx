@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+
+import {signInStart,signInFailure,signInSuccess} from '../redux/user/userSlice'
 
 function SignIn() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -16,10 +19,8 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
     try {
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -27,18 +28,17 @@ function SignIn() {
         },
         body: JSON.stringify(formData),
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message);
+      const data=await res.json()
+      console.log(data.success)
+      // console.log(data)
+      if(data.success===false){
+        dispatch(signInFailure(data.message))
+        return;
       }
-
-      const data = await res.json();
-      setLoading(false);
+      dispatch(signInFailure(data.message))
       navigate('/');
     } catch (err) {
-      setError(err.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 

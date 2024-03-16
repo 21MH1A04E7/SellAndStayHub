@@ -1,35 +1,34 @@
 import User from '../models/userModel.js'
 import {errorHandler} from '../utils/error.js'
-import bcryptjs from "bcryptjs";
-import jwttoken from 'jsonwebtoken';
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 export const signup=async (req,res,next)=>{
-   try{
     const {userName,email,password}=req.body
-    const newUser=new User({userName,email,password})
-    const response=await newUser.save()
-    if(!response){
-        return res.status(500).json({message:"internal server error"})
-    }
-    res.status(201).json({message:"success"})
+    if(!userName||!email||!password) return next(errorHandler(404,'inter details'))
+    const salt=await bcryptjs.genSalt(10)
+    const hashedPassword = bcryptjs.hashSync(password, salt);
+    const newUser = new User({ userName, email, password: hashedPassword });
+   try{
+    const response=await newUser.save();
+    res.status(201).json('User created successfully!');
    }
    catch(err){
-    console.log('internal server error')
     next(err)
    }
 }
 
 export const signin=async (req,res,next)=>{
+    const {email,password}=req.body
     try{
-        const {email,password}=req.body
         const user=await User.findOne({email})
         if(!user){
-            return res.status(401).json({message:"user not found"})
+            return next(errorHandler(404,'User not found'))
         }
         const isMatch=bcryptjs.compareSync(password,user.password)
         if(!isMatch){
-            return next(errorHandler(401,'Wrong credentials'))
+            return next(errorHandler(401,'Wrong credentials..'))
         }
-        const token=jwttoken.sign({id:user._id},process.env.JWT_SECRET)
+        const token=jwt.sign({id:user._id},process.env.JWT_SECRET)
         const {password:pass,...rest}=user._doc
         res.cookie('access_token',token,{httpOnly:true})
         .status(200)

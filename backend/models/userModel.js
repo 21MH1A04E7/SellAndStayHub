@@ -18,19 +18,5 @@ const userSchema=new mongoose.Schema({
     }
 },{timestamps:true})//for extra information about user timestamps will be added 
 
-userSchema.pre('save',async function (next){
-    const user=this
-    if(!user.isModified('password')) return next()
-    try{
-        const salt=await bcryptjs.genSalt(10)
-        const hashedPassword=await bcryptjs.hashSync(user.password,salt)
-        user.password=hashedPassword
-        next()
-    }
-    catch(err){
-        return next(err)
-    }
-})
-
 const User=mongoose.model('User',userSchema)
 export default User
