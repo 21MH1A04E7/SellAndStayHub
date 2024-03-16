@@ -17,10 +17,23 @@ connecteMongoDb(process.env.MOGOLOCAURL)
 
 //middleWare
 app.use(express.json())
-app.use('/api/user',userRouter)
-app.use('/api/auth',authRouter)
+//error handler middleWare
+
 
 
 app.listen(8080,()=>{
     console.log("server started!")
 })
+
+app.use('/api/user',userRouter)
+app.use('/api/auth',authRouter)
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+    return res.status(statusCode).json({
+      success: false,
+      statusCode,
+      message,
+    });
+  });

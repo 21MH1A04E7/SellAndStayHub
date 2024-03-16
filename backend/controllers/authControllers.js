@@ -1,5 +1,7 @@
 import User from '../models/userModel.js'
-export const signup=async (req,res)=>{
+import {errorHandler} from '../utils/error.js'
+
+export const signup=async (req,res,next)=>{
    try{
     const {userName,email,password}=req.body
     const newUser=new User({userName,email,password})
@@ -11,6 +13,6 @@ export const signup=async (req,res)=>{
    }
    catch(err){
     console.log('internal server error')
-    res.status(501).json(err.message)
+    next(errorHandler(200,'enter'))
    }
 }
