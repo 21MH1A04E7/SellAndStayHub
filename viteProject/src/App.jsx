@@ -6,13 +6,16 @@ import ProfilePage from './Pages/ProfilePage'
 import SignIn from './Pages/SignIn'
 import SignUp from './Pages/SignUp'
 import Layout from './Layout'
+import PrivateRoute from './components/PrivateRoute'
 
 const router=createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout/>}>
       <Route path='/' element={<Home/>}/>
       <Route path='/about' element={<About/>}/>
+      <Route element={<PrivateRoute/>}>
       <Route path='/profile' element={<ProfilePage/>}/>
+      </Route>
       <Route path='/sign-in' element={<SignIn/>}/>
       <Route path='/sign-up' element={<SignUp/>}/>
     </Route>
