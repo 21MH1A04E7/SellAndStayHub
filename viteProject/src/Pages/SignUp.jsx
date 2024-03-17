@@ -1,6 +1,7 @@
 import React from "react";
 import { Link,useNavigate } from "react-router-dom";
 import { useState } from "react";
+import OAuth from "../components/OAuth";
 function SignUp() {
   const [formData, setformData] = useState({});
   const [error, setError] = useState(null);
@@ -40,7 +41,7 @@ function SignUp() {
   console.log(formData);
   return (
     <div className="max-w-sm mx-auto p-3">
-      <h1 className="text-2xl text-center font-semibold my-7 ms:text-3xl">
+      <h1 className="text-2xl text-center font-semibold my-7 ms:text-3xl font-serif">
         SignUp
       </h1>
       <form className="flex flex-col gap-2 bg-slate" onSubmit={handleSubmit}>
@@ -71,6 +72,7 @@ function SignUp() {
         >
           {loading ? "Loading..." : "SignUp"}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-3 py-2">
         <p>Have an account?</p>

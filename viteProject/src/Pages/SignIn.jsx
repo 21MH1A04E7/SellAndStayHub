@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import OAuth from "../components/OAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -44,7 +45,7 @@ function SignIn() {
 
   return (
     <div className="max-w-sm mx-auto p-3">
-      <h1 className="text-2xl text-center font-semibold my-7 ms:text-3xl">
+      <h1 className="text-2xl text-center font-semibold my-7 ms:text-3xl font-serif">
         SignIn
       </h1>
       <form className="flex flex-col gap-2 bg-slate" onSubmit={handleSubmit}>
@@ -68,6 +69,7 @@ function SignIn() {
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-3 py-2">
         <p>Dont Have an account?</p>
