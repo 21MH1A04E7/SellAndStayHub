@@ -38,7 +38,7 @@ function ProfilePage() {
       <h2 className='text-3xl text-center font-bold my-5 italic hover:not-italic'>profile</h2>
       <form className='flex flex-col gap-2'>
         <input onChange={(e)=>setFile(e.target.files[0])} type='file' ref={fileRef} hidden accept='image./*'/>
-        <img  src={currentUser.avatar} onClick={()=>fileRef.current.click()} alt="profile" className='rounded-xl object-cover cursor-pointer w-22 h-22 self-center transition-transform hover:scale-110 ease-in-out shadow-md'/>
+        <img  src={currentUser.avatar} onClick={()=>fileRef.current.click()} alt="profile" className='rounded-xl object-cover cursor-pointer w-24 self-center transition-transform hover:scale-110 ease-in-out shadow-md'/>
         <input type='text' placeholder='userName' id='username' className='border  p-2 rounded-lg mt-2 bg-slate-100'/>
         <input type='email' placeholder='Email' id='email' className='border p-2 rounded-lg mt-2 bg-slate-100'/>
         <input type='password' placeholder='password' id='password' className='border p-2 rounded-lg mt-2 bg-slate-100'/>
