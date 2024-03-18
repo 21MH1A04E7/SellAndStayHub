@@ -19,8 +19,8 @@ function ProfilePage() {
   const [formData,setFormData]=useState({})
    // console.log(file)
   // console.log(formData)
-    // console.log(filePercentage)
-    console.log(fileUploadError)
+    console.log(filePercentage)
+  //   console.log(fileUploadError)
   useEffect(()=>{
     if(file){
       handleFileUpload(file);
@@ -37,16 +37,17 @@ function ProfilePage() {
           const progress=((snapshot.bytesTransferred/snapshot.totalBytes)*100)
           setFilePercentage(progress.toFixed(2))
         },
-        );
+       
         (error)=>{
           setFileUploadError(true);
-        };
+        },
         ()=>{
           getDownloadURL(uploadTask.snapshot.ref)
           .then((downloadURL)=>{
             setFormData({...formData,avatar: downloadURL});
           })
         }
+        );
           
   }
   return (
@@ -54,7 +55,20 @@ function ProfilePage() {
       <h2 className='text-3xl text-center font-bold my-5 italic hover:not-italic'>profile</h2>
       <form className='flex flex-col gap-2'>
         <input onChange={(e)=>setFile(e.target.files[0])} type='file' ref={fileRef} hidden accept='image./*'/>
-        <img  src={currentUser.avatar} onClick={()=>fileRef.current.click()} alt="profile" className='rounded-xl object-cover cursor-pointer w-24 self-center transition-transform hover:scale-110 ease-in-out shadow-md'/>
+        <img  src={formData.avatar||currentUser.avatar} onClick={()=>fileRef.current.click()} alt="profile" className='rounded-xl object-cover cursor-pointer w-24 self-center transition-transform hover:scale-110 ease-in-out shadow-md'/>
+        <p className='text-sm self-center'>
+          {fileUploadError ? (
+            <span className='text-red-700 italic'>
+              Error while uploading the file
+            </span>
+          ) : filePercentage > 0 && filePercentage < 100 ? (
+            <span className='text-slate-700'>{`Uploading.. ${filePercentage}%`}</span>
+          ) : filePercentage == 100.00 ? (
+            <span className='text-green-800 italic'>successfully uploaded!</span>
+          ) : (
+            ''
+          )}
+        </p>
         <input type='text' placeholder='userName' id='username' className='border  p-2 rounded-lg mt-2 bg-slate-100'/>
         <input type='email' placeholder='Email' id='email' className='border p-2 rounded-lg mt-2 bg-slate-100'/>
         <input type='password' placeholder='password' id='password' className='border p-2 rounded-lg mt-2 bg-slate-100'/>
