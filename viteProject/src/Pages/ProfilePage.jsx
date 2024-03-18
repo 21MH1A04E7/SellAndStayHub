@@ -4,6 +4,7 @@ import {useSelector} from 'react-redux'
 import { useRef } from 'react'
 import { set } from 'mongoose';
 import {
+  getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
@@ -13,6 +14,13 @@ function ProfilePage() {
   const fileRef=useRef(null);
   const {currentUser}=useSelector((state)=>state.user)
   const [file,setFile]=useState(undefined)
+  const [filePercentage,setFilePercentage]=useState(0)
+  const [fileUploadError,setFileUploadError]=useState(false)
+  const [formData,setFormData]=useState({})
+   // console.log(file)
+  // console.log(formData)
+    // console.log(filePercentage)
+    console.log(fileUploadError)
   useEffect(()=>{
     if(file){
       handleFileUpload(file);
@@ -27,12 +35,20 @@ function ProfilePage() {
         uploadTask.on('state_changed',
         (snapshot)=>{
           const progress=((snapshot.bytesTransferred/snapshot.totalBytes)*100)
-          console.log('progress'+progress+'done')
+          setFilePercentage(progress.toFixed(2))
         },
-        )
+        );
+        (error)=>{
+          setFileUploadError(true);
+        };
+        ()=>{
+          getDownloadURL(uploadTask.snapshot.ref)
+          .then((downloadURL)=>{
+            setFormData({...formData,avatar: downloadURL});
+          })
+        }
           
   }
-  console.log(file)
   return (
     <div className='p-2 max-w-sm mx-auto'>
       <h2 className='text-3xl text-center font-bold my-5 italic hover:not-italic'>profile</h2>
