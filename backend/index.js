@@ -3,6 +3,7 @@ import {connecteMongoDb} from './db.js'
 import dotenv from 'dotenv'
 import userRouter from './routes/userRouter.js';
 import authRouter from './routes/authRoute.js';
+import cookieParser from 'cookie-parser'
 dotenv.config()
 const app=express()
 
@@ -18,7 +19,7 @@ connecteMongoDb(process.env.MOGOLOCAURL)
 //middleWare
 app.use(express.json())
 //error handler middleWare
-
+app.use(cookieParser())
 
 
 app.listen(8080,()=>{
