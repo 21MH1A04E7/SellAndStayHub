@@ -24,7 +24,7 @@ function Header() {
             />
             <FaSearch className="searchIcon text-slate-500" />
           </form>
-          <ul className="flex gap-3 font-mono uppercase">
+          <ul className="flex gap-3 font-mono uppercase items-center">
             <NavLink to="/" >
               <li className="hidden sm:inline hover:underline text-slate-900">
                 Home
@@ -37,7 +37,7 @@ function Header() {
             </NavLink>
             <Link to='/profile'>
             {currentUser ? (
-              <img className='rounded-full h-8 w-9 object-cover' src={currentUser.avatar} alt='profile' />
+              <img className='rounded-full h- w-9 object-cover' src={currentUser.avatar} alt='profile' />
             ) : (
               <li className=' sm:inline hover:underline text-slate-900 '> Sign in</li>
             )}
