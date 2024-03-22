@@ -13,9 +13,10 @@ function CreateListing() {
   const [formData,setFormData]=useState({
     imageUrls:[],
   })
+  const [imageUploadError,setImageUploadError]=useState(false)
   console.log(formData)
   const handleSubmitFile=()=>{
-    if(files.length>0&&files.length<7){
+    if(files.length>0&&files.length+formData.imageUrls.length<7){
       const promises = [];
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImage(files[i]));
@@ -25,7 +26,12 @@ function CreateListing() {
           ...formData,
           imageUrls: formData.imageUrls.concat(urls),
         });
+        setImageUploadError(false);
+      }).catch((err)=>{
+        setImageUploadError('image upload fail (max 2mb)')
       })
+    }else{
+      setImageUploadError('we can only upload 6 images for room')
     }
   }
   const storeImage = async (file) => {
@@ -180,6 +186,14 @@ function CreateListing() {
                 Upload
               </button>
             </div>
+            <p className="text-red-600 text-sm pb-2">{imageUploadError&&imageUploadError}</p>
+            {formData.imageUrls.length > 0 &&formData.imageUrls.map((url, index) => (
+                <div className="flex justify-between p-2 items-center border my-1 shadow-lg bg-white rounded-xl ">
+                  <img src={url} alt={`image${index}`} className="w-[6rem]  object-contain rounded-lg" />
+                  <button type='button' className="text-red-600 uppercase border border-red-500 px-2 py-1 font-semibold hover:bg-[#e74c3c] hover:text-white rounded-lg hover:border-green-500 transition duration-300 ease-in-out focus:opacity-80">Delete</button>
+                </div>
+            ))
+            }
             <button className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3 transition hover:opacity-90 duration-300 ease-in-out focus:bg-[#cf6a87]">Create Room</button>
           </div>
         </form>
