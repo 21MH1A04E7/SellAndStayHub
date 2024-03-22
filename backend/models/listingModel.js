@@ -14,7 +14,7 @@ const listingSchema=new mongoose.Schema({
         require:true,
     },
     regularPrice:{
-        type:String,
+        type:Number,
         required:true,
     },
     discountPrices:{
@@ -52,7 +52,7 @@ const listingSchema=new mongoose.Schema({
     userData:{
         type:String,
         required:true,
-    }
+    },
 },{timestamps:true})
 
 const Listing=mongoose.model('Listing',listingSchema)
