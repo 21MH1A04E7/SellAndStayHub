@@ -7,7 +7,7 @@ function CreateListing() {
         <h1 className="text-xl font-semibold text-center my-6 sm:text-3xl">
           Create Rooms
         </h1>
-        <form className="flex flex-col sm:flex-row gap-3">
+        <form className="flex flex-col sm:flex-row gap-6">
           <div className="flex flex-col gap-3 flex-1">
             <input
               type="text"
@@ -69,7 +69,6 @@ function CreateListing() {
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  placeholder=""
                   id="bathroom"
                   min="1"
                   max="6"
@@ -81,7 +80,6 @@ function CreateListing() {
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  placeholder=""
                   id="regular-price"
                   min="1"
                   max="20"
@@ -113,23 +111,23 @@ function CreateListing() {
           <div className="flex flex-1 flex-col ">
             <p className="font-semibold px-3">
               Images:
-              <span className="font-normal  text-gray-600 ml-2">
-                The first image will bethe cover (max 6)
+              <span className="font-normal italic  text-[#EA2027] ml-2">
+                The first image will be the cover (max 6)
               </span>
             </p>
             <div className="flex gap-5 items-center">
               <input
                 type="file"
-                className="p-3 border-gray-400 rounded w-full"
+                className="p-3 rounded w-full outline:none"
                 id="images"
                 accept="image/*"
                 multiple
               />
-              <button className="p-2 text-green-600 border border-green-600 rounded-lg hover:bg-slate-200 hover:text-green-600 transition duration-300 ease-in-out">
+              <button className="px-3 py-2 text-green-600 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white transition duration-300 ease-in-out focus:bg-[#0652DD]">
                 Upload
               </button>
             </div>
-            <button className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3">Create Room</button>
+            <button className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3 transition hover:opacity-90 duration-300 ease-in-out focus:bg-[#cf6a87]">Create Room</button>
           </div>
         </form>
       </main>
