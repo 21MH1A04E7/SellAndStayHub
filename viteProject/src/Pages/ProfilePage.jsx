@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { app } from "../firebase.js";
 import { useSelector, useDispatch } from "react-redux";
+import {Link} from 'react-router-dom'
 import { useRef } from "react";
 import { FaExclamationTriangle } from 'react-icons/fa';
 import {
@@ -188,6 +189,9 @@ function ProfilePage() {
         <button className="bg-[#5352ed] rounded-lg p-2 uppercase hover:opacity-90 disabled:opacity-80 text-white" disabled={loading}>
           {loading?'loding...':'update'}
         </button>
+        <Link to='/create-listing' className="uppercase bg-[#30336b] p-2 rounded-lg text-[#ecf0f1] text-center font-semibold hover:opacity-90" >
+            Add Rooms
+        </Link>
       </form>
       <div className="flex justify-between mt-2">
         <span className="text-red-600 cursor-pointer" onClick={handleDeleteUser}>delete account</span>
