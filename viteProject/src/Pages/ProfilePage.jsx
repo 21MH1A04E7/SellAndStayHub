@@ -1,9 +1,9 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { app } from "../firebase.js";
 import { useSelector, useDispatch } from "react-redux";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 import { useRef } from "react";
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaExclamationTriangle } from "react-icons/fa";
 import {
   getDownloadURL,
   getStorage,
@@ -19,17 +19,18 @@ import {
   deleteUserFailure,
   logoutUserStart,
   logoutUserSuccess,
-  logoutUserFailure
- 
+  logoutUserFailure,
 } from "../redux/user/userSlice.js";
 function ProfilePage() {
   const fileRef = useRef(null);
-  const { currentUser,loading,error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updated, setUpdated] = useState(false)
+  const [updated, setUpdated] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
   // console.log(file)
   // console.log(formData)
@@ -64,11 +65,11 @@ function ProfilePage() {
       }
     );
   };
-  const resetTimeOut=()=>{
+  const resetTimeOut = () => {
     setTimeout(() => {
-      setUpdated(false)
+      setUpdated(false);
     }, 2000);
-  }
+  };
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -93,42 +94,56 @@ function ProfilePage() {
       }
 
       dispatch(updateUserSuccess(data));
-      setUpdated(true)
-      resetTimeOut()
+      setUpdated(true);
+      resetTimeOut();
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
   };
-  const handleDeleteUser=async ()=>{
-    try{
+  const handleDeleteUser = async () => {
+    try {
       dispatch(deleteUserStart());
-      const res=await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE',
-      })
-      const data=res.json()
-      if(data.success==false){
-        dispatch(deleteUserFailure(data.message))
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      if (data.success == false) {
+        dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess())
-    }catch(error){
+      dispatch(deleteUserSuccess());
+    } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
-  }
-  const handleLogout=async ()=>{
-    try{
+  };
+  const handleLogout = async () => {
+    try {
       dispatch(logoutUserStart());
-      const res=await fetch('/api/auth/logout')
-      const data=await res.json()
-      if(data.success==false){
-        dispatch(logoutUserFailure(data.message))
-        return ;
+      const res = await fetch("/api/auth/logout");
+      const data = await res.json();
+      if (data.success == false) {
+        dispatch(logoutUserFailure(data.message));
+        return;
       }
-      dispatch(logoutUserSuccess())
-    }catch(error){
-      dispatch(logoutUserFailure(error.message))
+      dispatch(logoutUserSuccess());
+    } catch (error) {
+      dispatch(logoutUserFailure(error.message));
     }
-  }
+  };
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success == false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setShowListingsError(true);
+    }
+  };
   return (
     <div className="p-2 max-w-sm mx-auto">
       <h2 className="text-3xl text-center font-bold my-5 italic hover:not-italic">
@@ -186,19 +201,74 @@ function ProfilePage() {
           onChange={handleChange}
           className="border p-2 rounded-lg mt-2 bg-slate-100"
         />
-        <button className="bg-[#5352ed] rounded-lg p-2 uppercase hover:opacity-90 disabled:opacity-80 text-white" disabled={loading}>
-          {loading?'loding...':'update'}
+        <button
+          className="bg-[#5352ed] rounded-lg p-2 uppercase hover:opacity-90 disabled:opacity-80 text-white"
+          disabled={loading}
+        >
+          {loading ? "loding..." : "update"}
         </button>
-        <Link to='/create-listing' className="uppercase bg-[#30336b] p-2 rounded-lg text-[#ecf0f1] text-center font-semibold hover:opacity-90" >
-            Add Rooms
+        <Link
+          to="/create-listing"
+          className="uppercase bg-[#30336b] p-2 rounded-lg text-[#ecf0f1] text-center font-semibold hover:opacity-90"
+        >
+          Add Rooms
         </Link>
       </form>
       <div className="flex justify-between mt-2">
-        <span className="text-red-600 cursor-pointer" onClick={handleDeleteUser}>delete account</span>
-        <span className="text-red-600 cursor-pointer" onClick={handleLogout}>Logout</span>
+        <span
+          className="text-red-600 cursor-pointer"
+          onClick={handleDeleteUser}
+        >
+          delete account
+        </span>
+        <span className="text-red-600 cursor-pointer" onClick={handleLogout}>
+          Logout
+        </span>
       </div>
-      {error?<span className="text-red-500 italic">{error}<FaExclamationTriangle className="text-yellow-400 inline ml-1"/></span>:''}
-      {updated?<spna className="text-green-500">updated  successfuly...</spna>:null}
+      <p>
+        {error ? (
+          <span className="text-red-500 italic">
+            {error}
+            <FaExclamationTriangle className="text-yellow-400 inline ml-1" />
+          </span>
+        ) : (
+          ""
+        )}
+      </p>
+      <p>
+        {updated ? (
+          <spna className="text-green-500">updated successfuly...</spna>
+        ) : null}
+      </p>
+      <button onClick={handleShowListings} className="text-green-600 w-full">
+        Show Listing
+      </button>
+      <p className="text-red-600 mt-4">
+        {showListingsError ? "Error showListings" : ""}
+      </p>
+      {userListings && userListings.length > 0 && (
+  <div className="flex flex-col gap-3">
+    <h1 className="text-center text-2xl font-semibold">Your Rooms</h1>
+    {userListings.map((listing) => (
+      <div className="border rounded-lg p-2 flex justify-between items-center gap-3 shadow-md hover:shadow-lg transition duration-300" key={listing._id}>
+        <Link to={`/listing/${listing._id}`}>
+          <img
+            src={listing.imageUrls[0]}
+            alt="listing image"
+            className="w-16 h-16 object-contain rounded-md transition duration-300 transform hover:scale-110"
+          />
+        </Link>
+        <Link className="flex-1 text-slate-600 font-semibold hover:underline truncate" to={`/listing/${listing._id}`}>
+          <p>{listing.name}</p>
+        </Link>
+        <div className="flex flex-col items-center">
+          <button className="text-red-700 uppercase hover:text-red-900">Delete</button>
+          <button className="text-green-700 uppercase hover:text-green-900">Edit</button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
     </div>
   );
 }
