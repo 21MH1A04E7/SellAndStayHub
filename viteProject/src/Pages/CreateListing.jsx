@@ -17,6 +17,8 @@ function CreateListing() {
   console.log(formData)
   const handleSubmitFile=()=>{
     if(files.length>0&&files.length+formData.imageUrls.length<7){
+      setLoading(true)
+      setImageUploadError(false)
       const promises = [];
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImage(files[i]));
@@ -27,11 +29,14 @@ function CreateListing() {
           imageUrls: formData.imageUrls.concat(urls),
         });
         setImageUploadError(false);
+        setLoading(false)
       }).catch((err)=>{
         setImageUploadError('image upload fail (max 2mb)')
+        setLoading(false)
       })
     }else{
       setImageUploadError('we can only upload 6 images for room')
+      setLoading(false)
     }
   }
   const storeImage = async (file) => {
@@ -58,7 +63,13 @@ function CreateListing() {
       );
     });
   }
-  console.log(files)
+  const handleRemoveImage=(index)=>{
+    setFormData({
+      ...formData,
+      imageUrls:formData.imageUrls.filter((_,i)=>i!==index)
+    })
+  }
+  const [loading,setLoading]=useState(false)
   return (
     <>
       <main className="p-3 max-w-4xl mx-auto">
@@ -183,14 +194,14 @@ function CreateListing() {
                 multiple
               />
               <button onClick={handleSubmitFile} type="button" className="px-3 py-2 text-green-600 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white transition duration-300 ease-in-out focus:bg-[#0652DD]">
-                Upload
+                {loading?'Uploading...':'Upload'}
               </button>
             </div>
             <p className="text-red-600 text-sm pb-2">{imageUploadError&&imageUploadError}</p>
             {formData.imageUrls.length > 0 &&formData.imageUrls.map((url, index) => (
-                <div className="flex justify-between p-2 items-center border my-1 shadow-lg bg-white rounded-xl ">
+                <div  key={url} className="flex justify-between p-2 items-center border my-1 shadow-lg bg-white rounded-xl ">
                   <img src={url} alt={`image${index}`} className="w-[6rem]  object-contain rounded-lg" />
-                  <button type='button' className="text-red-600 uppercase border border-red-500 px-2 py-1 font-semibold hover:bg-[#e74c3c] hover:text-white rounded-lg hover:border-green-500 transition duration-300 ease-in-out focus:opacity-80">Delete</button>
+                  <button type='button' onClick={()=>handleRemoveImage(index)} className="text-red-600 uppercase border border-red-500 px-2 py-1 font-semibold hover:bg-[#e74c3c] hover:text-white rounded-lg hover:border-green-500 transition duration-300 ease-in-out focus:opacity-80">Delete</button>
                 </div>
             ))
             }
