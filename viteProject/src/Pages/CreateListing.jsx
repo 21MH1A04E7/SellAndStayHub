@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { app } from "../firebase.js";
+import {useSelector,useDispatch} from 'react-redux'
+import {useNavigate} from 'react-router-dom'
 import {
   getDownloadURL,
   getStorage,
@@ -9,8 +11,13 @@ import {
 } from "firebase/storage";
 
 function CreateListing() {
+  const {currentUser}=useSelector(state=>state.user)
+  const navigate=useNavigate()
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [error,setError]=useState(false);
+  const [loading,setLoading]=useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -25,11 +32,10 @@ function CreateListing() {
     type: "rent",
     offer: false,
   });
-  const [imageUploadError, setImageUploadError] = useState(false);
   console.log(formData);
   const handleSubmitFile = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
-      setLoading(true);
+      setImageLoading(true);
       setImageUploadError(false);
       const promises = [];
       for (let i = 0; i < files.length; i++) {
@@ -42,15 +48,15 @@ function CreateListing() {
             imageUrls: formData.imageUrls.concat(urls),
           });
           setImageUploadError(false);
-          setLoading(false);
+          setImageLoading(false);
         })
         .catch((err) => {
           setImageUploadError("image upload fail (max 2mb)");
-          setLoading(false);
+          setImageLoading(false);
         });
     } else {
       setImageUploadError("we can only upload 6 images for room");
-      setLoading(false);
+      setImageLoading(false);
     }
   };
   const storeImage = async (file) => {
@@ -106,6 +112,31 @@ function CreateListing() {
   };
   const handleSubmit=async (e)=>{
     e.preventDefault()
+    try{
+      if(formData.imageUrls.length<1) return setError('Please select at least one image!');
+      if(+formData.regularPrice<+formData.discountPrices) return setError('A discount price smaller than the regular price!');
+      setLoading(true);
+      setError(false);
+      const res=await fetch('/api/listing/create',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          ...formData,
+          userData:currentUser._id
+        })
+      })
+      const data=await res.json()
+      setLoading(false)
+      if(data.success===false){
+        setError(data.message)
+      }
+      // navigate(`/listing/${data._id}`)
+    }catch(error){
+      setError(error.message);
+      setLoading(false);
+    }
   }
   return (
     <>
@@ -227,7 +258,7 @@ function CreateListing() {
                 <input
                   type="number"
                   id="regularPrice"
-                  min="50"
+                  min="20"
                   max="500000"
                   required
                   className="bg-gray-200 p-2 rounded-lg border-red-400"
@@ -239,13 +270,14 @@ function CreateListing() {
                   <span className="text-xs">($ / months)</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              {formData.offer&&(
+                <div className="flex items-center gap-2">
                 <input
                   type="number"
                   placeholder=""
                   id="discountPrices"
-                  min="1"
-                  max="20"
+                  min="0"
+                  max="5000000"
                   required
                   className="bg-gray-200 p-2 rounded-lg border-red-400"
                   onChange={handleChange}
@@ -256,6 +288,7 @@ function CreateListing() {
                   <span className="text-xs">($ / months)</span>
                 </div>
               </div>
+              )}
             </div>
           </div>
           <div className="flex flex-1 flex-col ">
@@ -276,10 +309,11 @@ function CreateListing() {
               />
               <button
                 onClick={handleSubmitFile}
+                disabled={imageLoading}
                 type="button"
                 className="px-3 py-2 text-green-600 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white transition duration-300 ease-in-out focus:bg-[#0652DD]"
               >
-                {loading ? "Uploading..." : "Upload"}
+                {imageLoading ? "Uploading..." : "Upload"}
               </button>
             </div>
             <p className="text-red-600 text-sm pb-2">
@@ -305,9 +339,10 @@ function CreateListing() {
                   </button>
                 </div>
               ))}
-            <button className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3 transition hover:opacity-90 duration-300 ease-in-out focus:bg-[#cf6a87]">
-              Create Room
+            <button disabled={loading||imageLoading} className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3 transition hover:opacity-90 duration-300 ease-in-out focus:bg-[#cf6a87] disabled:opacity-80">
+              {loading?'creating....':'Create Room'}
             </button>
+            {error&&<p className="text-red-500">{error} </p>}
           </div>
         </form>
       </main>
