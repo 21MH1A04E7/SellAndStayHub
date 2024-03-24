@@ -106,23 +106,23 @@ function Listing() {
             <p className="text-slate-700">
               <span className="text-black font-semibold ">Description - </span>{listing.description}
             </p>
-            <ul className="text-green-800 font-semibold text-md sm:text-lg flex items-center gap-4 sm:gap-6 flex-wrap">
-              <li className="flex items-center gap-1 whitespace-nowrap ">
+            <ul className="font-semibold text-md sm:text-lg flex items-center gap-4 sm:gap-6 flex-wrap">
+              <li className="flex items-center gap-1 whitespace-nowrap text-[#a448b2]">
                 <FaBed className="text-lg"/>
                 {listing.bedroom>1?`${listing.bedroom} Beds`:
                 `${listing.bedroom} Bed`}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap ">
+              <li className="flex items-center gap-1 whitespace-nowrap text-[#00a8ff]">
                 <FaBath className="text-lg"/>
                 {listing.bathroom>1?`${listing.bathroom} Baths`:
                 `${listing.bathroom} Bath`}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap ">
+              <li className="flex items-center gap-1 whitespace-nowrap text-[#686de0]">
                 <FaParking className="text-lg"/>
                 {listing.parking?`Parking Spot`:
                 `No Parking`}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap ">
+              <li className="flex items-center gap-1 whitespace-nowrap text-[#a55eea]">
                 <FaChair className="text-lg"/>
                 {listing.furnished?`Furnished`:
                 `No Furnished`}
