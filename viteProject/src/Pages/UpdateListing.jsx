@@ -1,8 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { app } from "../firebase.js";
 import {useSelector} from 'react-redux'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate,useParams} from 'react-router-dom'
 import {
   getDownloadURL,
   getStorage,
@@ -10,9 +9,10 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 
-function CreateListing() {
+function UpdateListing() {
   const {currentUser}=useSelector(state=>state.user)
   const navigate=useNavigate()
+  const params=useParams()
   const [files, setFiles] = useState([]);
   const [imageLoading, setImageLoading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState(false);
@@ -32,7 +32,22 @@ function CreateListing() {
     type: "rent",
     offer: false,
   });
-  console.log(formData);
+  // console.log(formData);
+  //fetching the listing
+  useEffect(()=>{
+    const fetchListing=async ()=>{
+      const listingId=params.listingId;
+      const res=await fetch(`/api/listing/getListing/${listingId}`)
+      const data=await res.json();
+      if(data.success===false){
+        console.log(data.message);
+        return ;
+      }
+      console.log(data)
+      setFormData(data)
+    }
+    fetchListing()
+  },[])
   const handleSubmitFile = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setImageLoading(true);
@@ -117,7 +132,7 @@ function CreateListing() {
       if(+formData.regularPrice<+formData.discountPrices) return setError('A discount price smaller than the regular price!');
       setLoading(true);
       setError(false);
-      const res=await fetch('/api/listing/create',{
+      const res=await fetch(`/api/listing/update/${params.listingId}`,{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
@@ -142,7 +157,7 @@ function CreateListing() {
     <>
       <main className="p-3 max-w-4xl mx-auto">
         <h1 className="text-xl font-semibold text-center my-6 sm:text-3xl">
-          Create Rooms
+          Update Rooms
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-6">
           <div className="flex flex-col gap-3 flex-1">
@@ -340,7 +355,7 @@ function CreateListing() {
                 </div>
               ))}
             <button disabled={loading||imageLoading} className="p-2 bg-[#833471] text-white border border-green rounded-lg ml-3 transition hover:opacity-90 duration-300 ease-in-out focus:bg-[#cf6a87] disabled:opacity-80">
-              {loading?'creating....':'Create Room'}
+              {loading?'Updating....':'Update Room'}
             </button>
             {error&&<p className="text-red-500">{error} </p>}
           </div>
@@ -350,4 +365,4 @@ function CreateListing() {
   );
 }
 
-export default CreateListing;
+export default UpdateListing;
