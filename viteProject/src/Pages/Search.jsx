@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 function Search() {
   const navigate=useNavigate();
+  const [loading,setLoading]=useState(false);
+  const [listing,setListing]=useState([]);
   const [sidebarData, setSidebarData] = useState({
     searchTerm: "",
     type: "all",
@@ -42,7 +44,50 @@ function Search() {
     const searchQuery=urlParams.toString()
     navigate(`/search?${searchQuery}`)
   }
-  
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    const typeFromUrl = urlParams.get('type');
+    const parkingFromUrl = urlParams.get('parking');
+    const furnishedFromUrl = urlParams.get('furnished');
+    const offerFromUrl = urlParams.get('offer');
+    const sortFromUrl = urlParams.get('sort');
+    const orderFromUrl = urlParams.get('order');
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSidebarData({
+        searchTerm: searchTermFromUrl || '',
+        type: typeFromUrl || 'all',
+        parking: parkingFromUrl === 'true' ? true : false,
+        furnished: furnishedFromUrl === 'true' ? true : false,
+        offer: offerFromUrl === 'true' ? true : false,
+        sort: sortFromUrl || 'createdAt',
+        order: orderFromUrl || 'desc',
+      });
+    }
+    console.log(listing)
+    const fetchData=async ()=>{
+      try{
+        // http://localhost:8080/api/listing/getListing
+        setLoading(true);
+        const serachQuery=urlParams.toString();
+        const res=await fetch(`/api/listing/getListing?${serachQuery}`);
+        const data=await res.json();
+        setListing(data)
+        setLoading(false)
+      }catch(error){
+        console.log(error)
+      }
+    }
+    fetchData()
+  },[location.search])
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-6 border-b-2 md:border-r-2 md:min-h-screen">
