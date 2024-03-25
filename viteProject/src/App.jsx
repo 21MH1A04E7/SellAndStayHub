@@ -9,12 +9,14 @@ import Layout from './Layout'
 import PrivateRoute from './components/PrivateRoute'
 import CreateListing from './Pages/CreateListing'
 import UpdateListing from './Pages/updateListing'
+import Search from './Pages/Search'
 import Listing from './Pages/Listing'
 const router=createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout/>}>
       <Route path='/' element={<Home/>}/>
       <Route path='/about' element={<About/>}/>
+      <Route path='/search' element={<Search/>}/>
       <Route path='/listing/:listingId' element={<Listing/>}/>
       <Route element={<PrivateRoute/>}>
         <Route path='/profile' element={<ProfilePage/>}/>

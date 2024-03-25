@@ -13,7 +13,7 @@ function Header() {
     urlParams.set('searchTerm',searchTerm);
     const searchQuery=urlParams.toString()
     navigate(`/search?${searchQuery}`)
-    console.log(searchTerm)
+    // console.log(searchTerm)
   }
 useEffect(()=>{
   const urlParams=new URLSearchParams(window.location.search)
@@ -36,6 +36,7 @@ useEffect(()=>{
           <form onSubmit={handleSubmit} className="bg-slate-100 flex items-center rounded-lg px-2">
             <input
               type="text"
+              value={searchTerm}
               placeholder="search..."
               className="rounded-lg bg-transparent focus:outline-none w-28 sm:w-40 py-1 "
               onChange={(e)=>setSearchTerm(e.target.value)}
