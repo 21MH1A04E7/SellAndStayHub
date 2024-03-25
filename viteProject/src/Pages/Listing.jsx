@@ -1,9 +1,11 @@
+import Contact from "../components/Contact";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 //npm i swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
+import {useSelector} from 'react-redux'
 import "swiper/css/bundle";
 import {
   FaBath,
@@ -20,7 +22,11 @@ function Listing() {
   const [listing, setListing] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(listing);
+  const [copied,setCopied]=useState(false); 
+  const {currentUser}=useSelector((state)=>state.user);
+  const [contact,setContact]=useState(false);
+  // console.log(contact)
+  // console.log(listing);
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -128,11 +134,13 @@ function Listing() {
                 `No Furnished`}
               </li>
             </ul>
+            {currentUser&& listing.userData!==currentUser._id && !contact && (
+              <button onClick={()=>setContact(true)} className="bg-[#42427a] p-2 rounded-lg uppercase hover:opacity-90 text-white" type='button'>Contact</button>
+            )}
+            {contact&& (<Contact listingData={listing}/>)}
           </div>
-         
         </div>
       )}
-      {/* <p>{listing.name}</p> */}
     </main>
   );
 }
