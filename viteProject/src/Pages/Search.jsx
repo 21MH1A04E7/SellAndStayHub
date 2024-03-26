@@ -3,48 +3,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 function Search() {
   const navigate=useNavigate();
-  const [loading,setLoading]=useState(false);
-  const [listing,setListing]=useState([]);
-  const [sidebarData, setSidebarData] = useState({
-    searchTerm: "",
-    type: "all",
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+  const [sidebardata, setSidebardata] = useState({
+    searchTerm: '',
+    type: 'all',
     parking: false,
     furnished: false,
-    sort: "createdAt",
-    order: "desc",
     offer: false,
+    sort: 'created_at',
+    order: 'desc',
   });
-  const handleChange = (e) => {
-    if(e.target.id=='all'||e.target.id=='rent'||e.target.id=='sale'){
-      setSidebarData({...sidebarData,type:e.target.id})
-    };
-    if(e.target.id=='searchTerm'){
-      setSidebarData({...sidebarData,searchTerm:e.target.value})
-    };
-    if(e.target.id=='parking'||e.target.id=='furnished'||e.target.id=='offer'){
-      setSidebarData({...sidebarData,[e.target.id]:e.target.checked||e.target.checked=='true'?true:false})
-    }
-    if(e.target.id=='sort_order'){
-      const sort=e.target.value.split('_')[0]||'createdAt';
-      const order=e.target.value.split('_')[1]||'desc';
-      setSidebarData({...sidebarData,sort,order})
-    }
-  };
-  // console.log(sidebarData)
-  const handleSubmit=(e)=>{
-    e.preventDefault()
-    const urlParams=new URLSearchParams()
-    urlParams.set('searchTerm',sidebarData.searchTerm)
-    urlParams.set('type',sidebarData.type)
-    urlParams.set('parking',sidebarData.parking)
-    urlParams.set('furnished',sidebarData.furnished)
-    urlParams.set('sort',sidebarData.sort)
-    urlParams.set('order',sidebarData.order)
-    urlParams.set('offer',sidebarData.offer)
-    const searchQuery=urlParams.toString()
-    navigate(`/search?${searchQuery}`)
-  }
-  useEffect(()=>{
+  // console.log(sidebardata)
+  useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
     const typeFromUrl = urlParams.get('type');
@@ -53,6 +24,7 @@ function Search() {
     const offerFromUrl = urlParams.get('offer');
     const sortFromUrl = urlParams.get('sort');
     const orderFromUrl = urlParams.get('order');
+
     if (
       searchTermFromUrl ||
       typeFromUrl ||
@@ -62,7 +34,7 @@ function Search() {
       sortFromUrl ||
       orderFromUrl
     ) {
-      setSidebarData({
+      setSidebardata({
         searchTerm: searchTermFromUrl || '',
         type: typeFromUrl || 'all',
         parking: parkingFromUrl === 'true' ? true : false,
@@ -72,22 +44,66 @@ function Search() {
         order: orderFromUrl || 'desc',
       });
     }
-    console.log(listing)
-    const fetchData=async ()=>{
-      try{
-        // http://localhost:8080/api/listing/getListing
-        setLoading(true);
-        const serachQuery=urlParams.toString();
-        const res=await fetch(`/api/listing/getListing?${serachQuery}`);
-        const data=await res.json();
-        setListing(data)
-        setLoading(false)
-      }catch(error){
-        console.log(error)
-      }
+
+    const fetchListings = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/getListing?${searchQuery}`);
+      const data = await res.json();
+      setListings(data);
+      setLoading(false);
+    };
+
+    fetchListings();
+  }, [location.search]);
+  console.log(listings)
+  const handleChange = (e) => {
+    if (
+      e.target.id === 'all' ||
+      e.target.id === 'rent' ||
+      e.target.id === 'sale'
+    ) {
+      setSidebardata({ ...sidebardata, type: e.target.id });
     }
-    fetchData()
-  },[location.search])
+
+    if (e.target.id === 'searchTerm') {
+      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
+    }
+
+    if (
+      e.target.id === 'parking' ||
+      e.target.id === 'furnished' ||
+      e.target.id === 'offer'
+    ) {
+      setSidebardata({
+        ...sidebardata,
+        [e.target.id]:
+          e.target.checked || e.target.checked === 'true' ? true : false,
+      });
+    }
+
+    if (e.target.id === 'sort_order') {
+      const sort = e.target.value.split('_')[0] || 'created_at';
+
+      const order = e.target.value.split('_')[1] || 'desc';
+
+      setSidebardata({ ...sidebardata, sort, order });
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set('searchTerm', sidebardata.searchTerm);
+    urlParams.set('type', sidebardata.type);
+    urlParams.set('parking', sidebardata.parking);
+    urlParams.set('furnished', sidebardata.furnished);
+    urlParams.set('offer', sidebardata.offer);
+    urlParams.set('sort', sidebardata.sort);
+    urlParams.set('order', sidebardata.order);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-6 border-b-2 md:border-r-2 md:min-h-screen">
@@ -99,7 +115,7 @@ function Search() {
               id="searchTerm"
               placeholder="Search....."
               className="border rounded-lg w-full p-3 bg-white focus:outline-none focus:ring focus:border-blue-300"
-              value={sidebarData.searchTerm}
+              value={sidebardata.searchTerm}
               onChange={handleChange}
             />
           </div>
@@ -110,7 +126,7 @@ function Search() {
                 type="checkbox"
                 id="all"
                 className="w-5 h-5"
-                checked={sidebarData.type === "all"}
+                checked={sidebardata.type ==="all"}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Rent & Sale</span>
@@ -120,7 +136,7 @@ function Search() {
                 type="checkbox"
                 id="rent"
                 className="w-5 h-5"
-                checked={sidebarData.type === "rent"}
+                checked={sidebardata.type === "rent"}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Rent</span>
@@ -130,7 +146,7 @@ function Search() {
                 type="checkbox"
                 id="sale"
                 className="w-5 h-5"
-                checked={sidebarData.type === "sale"}
+                checked={sidebardata.type === "sale"}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Sale</span>
@@ -140,7 +156,7 @@ function Search() {
                 type="checkbox"
                 id="offer"
                 className="w-5 h-5"
-                checked={sidebarData.offer}
+                checked={sidebardata.offer}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Offer</span>
@@ -153,7 +169,7 @@ function Search() {
                 type="checkbox"
                 id="parking"
                 className="w-5 h-5"
-                checked={sidebarData.parking}
+                checked={sidebardata.parking}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Parking</span>
@@ -163,7 +179,7 @@ function Search() {
                 type="checkbox"
                 id="furnished"
                 className="w-5 h-5"
-                checked={sidebarData.furnished}
+                checked={sidebardata.furnished}
                 onChange={handleChange}
               />
               <span className="text-gray-700">Furnished</span>

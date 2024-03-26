@@ -9,19 +9,19 @@ function Header() {
   const [searchTerm,setSearchTerm]=useState('')
   const handleSubmit=(e)=>{
     e.preventDefault();
-    const urlParams=new URLSearchParams(window.location.search);
-    urlParams.set('searchTerm',searchTerm);
-    const searchQuery=urlParams.toString()
-    navigate(`/search?${searchQuery}`)
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
     // console.log(searchTerm)
   }
 useEffect(()=>{
-  const urlParams=new URLSearchParams(window.location.search)
-  const urlSearchTerm=urlParams.get('searchTerm')
-  if(urlSearchTerm){
-    setSearchTerm(urlSearchTerm)
+  const urlParams = new URLSearchParams(location.search);
+  const searchTermFromUrl = urlParams.get('searchTerm');
+  if (searchTermFromUrl) {
+    setSearchTerm(searchTermFromUrl);
   }
-},[location.search]);
+}, [location.search]);
   return (
     <header className="bg-[#6a89cc] shadow-lg shadow-blue-500/30 ">
       <div className="flex justify-between items-center  mx-auto p-3 sm:px-10">
