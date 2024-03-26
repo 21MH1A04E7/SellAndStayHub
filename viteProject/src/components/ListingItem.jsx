@@ -8,7 +8,7 @@ function ListingItem({ listing }) {
         <img
           src={listing.imageUrls[0]}
           alt="image1"
-          className="h-[330px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300"
+          className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300"
         />
       </Link>
       <div className="p-4 flex flex-col gap-2 w-full">
