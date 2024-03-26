@@ -252,7 +252,7 @@ function ProfilePage() {
       </p>
       <p>
         {updated ? (
-          <spna className="text-green-500">updated successfuly...</spna>
+          <span className="text-green-500">updated successfuly...</span>
         ) : null}
       </p>
       <button onClick={handleShowListings} className="text-green-600 w-full">
