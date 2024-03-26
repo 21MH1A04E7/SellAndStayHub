@@ -9,7 +9,6 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-
 function CreateListing() {
   const {currentUser}=useSelector(state=>state.user)
   const navigate=useNavigate()
@@ -32,7 +31,7 @@ function CreateListing() {
     type: "rent",
     offer: false,
   });
-  console.log(formData);
+  // console.log(formData);
   const handleSubmitFile = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setImageLoading(true);

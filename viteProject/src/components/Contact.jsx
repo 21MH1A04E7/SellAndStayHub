@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {Link} from 'react-router-dom'
 function Contact({ listingData }) {
   // console.log(listingData)
+
   const [owner, setOwner] = useState(null);
   const [message, setMessage] = useState("");
   useEffect(() => {
@@ -9,15 +10,14 @@ function Contact({ listingData }) {
       try {
         const res = await fetch(`/api/user/${listingData.userData}`);
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         setOwner(data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchOwner();
-  }, [listingData.userData]);
-//   console.log(owner.email)
+  },[listingData.userData]);
  const handleChange = (e) => {
     setMessage(e.target.value);
   };
@@ -38,7 +38,7 @@ function Contact({ listingData }) {
             value={message}
             onChange={handleChange}
             placeholder="Enter your message"
-            class="w-full border border-gray-300 p-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full border border-gray-300 p-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           ></textarea>
           <Link to={`mailto:${owner.email}?subject=Regarding ${listingData.name}&body=${message}`}
           className="bg-slate-700 text-white p-2 rounded-lg hover:opacity-90 text-center uppercase">

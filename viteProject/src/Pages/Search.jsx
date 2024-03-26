@@ -64,7 +64,7 @@ function Search() {
 
     fetchListings();
   }, [location.search]);
-  console.log(listings)
+  // console.log(listings)
   const handleChange = (e) => {
     if (
       e.target.id === 'all' ||
