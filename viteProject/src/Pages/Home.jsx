@@ -95,7 +95,7 @@ function Home() {
             </SwiperSlide>
           ))}
       </Swiper>
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-[1400px] mx-auto p-2">
         {offerListings && offerListings.length > 0 && (
           <div className="flex flex-col">
             <div className="my-3">
