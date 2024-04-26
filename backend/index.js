@@ -9,7 +9,7 @@ dotenv.config()
 const app=express()
 
 
-connecteMongoDb(process.env.MOGOLOCAURL)
+connecteMongoDb(process.env.Mongo)
 .then(()=>{
     console.log('Connected to')
 })
