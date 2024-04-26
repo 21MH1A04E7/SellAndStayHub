@@ -8,7 +8,7 @@ import SignUp from './Pages/SignUp'
 import Layout from './Layout'
 import PrivateRoute from './components/PrivateRoute'
 import CreateListing from './Pages/CreateListing'
-import UpdateListing from './Pages/updateListing'
+import UpdateListing from './Pages/UpdateListing'
 import Search from './Pages/Search'
 import Listing from './Pages/Listing'
 const router=createBrowserRouter(
